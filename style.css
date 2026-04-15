@@ -1,200 +1,95 @@
-/* Color Palette Variables */
 :root {
-  --bg-cream: #F5F5DC;
-  --text-charcoal: #2a2a2a;
-  --accent-orange: #C85A17;
-  --accent-sage: #8A9A86;
-  --film-border: #111111;
-  
-  --font-serif: 'Bodoni Moda', serif;
-  --font-sans: 'Inter', sans-serif;
-}
-
-/* Reset */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
+    --cream: #FDFBF7; /* Un blanc papier très doux */
+    --charcoal: #1A1A1A;
+    --grey: #666666;
 }
 
 body {
-  background-color: var(--bg-cream);
-  color: var(--text-charcoal);
-  font-family: var(--font-sans);
-  line-height: 1.6;
-  overflow-x: hidden;
-  position: relative;
+    background-color: var(--cream);
+    color: var(--charcoal);
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
+    /* Effet texture papier */
+    background-image: url("https://www.transparenttextures.com/patterns/natural-paper.png");
 }
 
-/* Typography */
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-serif);
-  font-weight: 400;
-  color: var(--text-charcoal);
+header {
+    padding: 2rem 5%;
 }
 
-/* Grain Overlay (Subtle noise texture) */
-.grain-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0.06;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    padding-bottom: 1rem;
 }
 
-/* Navigation Bar */
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 2rem 5%;
-  position: relative;
-  z-index: 10;
+.logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -1px;
 }
 
-.logo h1 {
-  font-size: 2rem;
-  letter-spacing: 0.05em;
-  font-weight: 700;
-}
-
-.nav-links ul {
-  list-style: none;
-  display: flex;
-  gap: 3rem;
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 2.5rem;
 }
 
 .nav-links a {
-  text-decoration: none;
-  color: var(--text-charcoal);
-  text-transform: uppercase;
-  font-size: 0.85rem;
-  letter-spacing: 0.1em;
-  font-weight: 500;
-  transition: color 0.3s ease;
-  position: relative;
+    text-decoration: none;
+    color: var(--charcoal);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 400;
 }
 
-.nav-links a:hover {
-  color: var(--accent-orange);
-}
-
-.nav-links a::after {
-  content: '';
-  position: absolute;
-  width: 0;
-  height: 1px;
-  bottom: -4px;
-  left: 0;
-  background-color: var(--accent-orange);
-  transition: width 0.3s ease;
-}
-
-.nav-links a:hover::after {
-  width: 100%;
-}
-
-/* Hero Section */
 .hero {
-  display: flex;
-  justify-content: center;
-  padding: 2rem 5% 6rem;
-  min-height: calc(100vh - 100px);
-  position: relative;
+    padding: 5rem 5%;
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
 }
 
-.hero-layout {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  max-width: 900px;
-  width: 100%;
+h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    margin-bottom: 1rem;
+    font-weight: 400;
+    font-style: italic;
 }
 
-.hero-text-content {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  margin-top: 1.5rem;
-  font-family: var(--font-sans);
+.subtitle {
+    font-size: 1rem;
+    color: var(--grey);
+    margin-bottom: 4rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
 }
 
-.small-text {
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  color: var(--text-charcoal);
-  line-height: 1.5;
-  max-width: 300px;
+.main-image {
+    width: 100%;
+    margin-bottom: 3rem;
+    padding: 15px;
+    background: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
 
-.small-text.primary {
-  font-weight: 500;
-  text-align: left;
+.main-image img {
+    width: 100%;
+    filter: grayscale(100%) contrast(1.1); /* Effet Noir et Blanc classe */
+    display: block;
 }
 
-.small-text.secondary {
-  font-weight: 400;
-  text-align: right;
-  color: var(--accent-sage);
-}
-
-/* Hero Image & Film Strip Motif */
-.hero-image-container {
-  position: relative;
-  width: 100%;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-}
-
-.film-strip-border {
-  height: 32px;
-  background-color: var(--film-border);
-  position: relative;
-  width: 100%;
-}
-
-/* Film strip holes */
-.film-strip-border::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-image: radial-gradient(circle, var(--bg-cream) 4px, transparent 4px);
-  background-size: 40px 32px;
-  background-position: center;
-}
-
-.hero-image-wrapper {
-  width: 100%;
-  height: 65vh; /* Large, editorial aspect ratio */
-  overflow: hidden;
-  background-color: var(--film-border);
-  padding: 0 10px; /* Film border sides */
-}
-
-.hero-portrait {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: 50% 20%;
-  /* Enhancing the nostalgic film aesthetic */
-  filter: grayscale(100%) contrast(1.15) sepia(15%);
-  display: block;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .nav-links ul {
-    gap: 1.5rem;
-  }
-  
-  .hero-image-wrapper {
-    height: 50vh;
-  }
+.description {
+    max-width: 600px;
+    margin: 3rem auto;
+    font-size: 1.1rem;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
 }
