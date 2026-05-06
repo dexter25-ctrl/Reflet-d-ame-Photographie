@@ -1,0 +1,654 @@
+/* ================================================================
+   REFLET D'ÂME — PHOTOGRAPHIE
+   Feuille de style principale
+   ================================================================ */
+
+/* ----------------------------------------------------------------
+   VARIABLES CSS — Palette & tokens de design
+   Modifier ces valeurs pour personnaliser l'ensemble du site
+---------------------------------------------------------------- */
+:root {
+  /* Couleurs */
+  --color-void:       #04040a;        /* Fond spatial principal */
+  --color-deep:       #080820;        /* Couche secondaire */
+  --color-nebula:     #0d0d30;        /* Accent profond */
+  --color-gold:       #c9a96e;        /* Or photographique */
+  --color-gold-light: #e8d5a3;        /* Or clair */
+  --color-gold-dim:   #7a6040;        /* Or atténué */
+  --color-white:      #f0ede8;        /* Blanc chaud */
+  --color-muted:      rgba(240,237,232,0.5);
+
+  /* Typographie */
+  --font-serif:   'Cormorant Garamond', Georgia, serif;
+  --font-sans:    'Montserrat', sans-serif;
+
+  /* Dimensions */
+  --header-height: 80px;
+  --nav-gap: 2rem;
+
+  /* Animations */
+  --transition-tab: 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-ui:  0.3s ease;
+}
+
+/* ----------------------------------------------------------------
+   RESET & BASE
+---------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;           /* Empêche le scroll sur l'accueil — les onglets scrollent indépendamment */
+  background: var(--color-void);
+  color: var(--color-white);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ----------------------------------------------------------------
+   CANVAS THREE.JS
+   Fixé en fond absolu, couvre tout l'écran
+---------------------------------------------------------------- */
+#three-canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;                 /* Couche la plus basse */
+  display: block;
+}
+
+/* ----------------------------------------------------------------
+   CALQUE PERSONNES (image PNG détourée)
+   Positionné en avant-plan, derrière l'UI mais devant le canvas
+   Le JS applique la transformation parallaxe via transform
+---------------------------------------------------------------- */
+#subjects-layer {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;                 /* Au-dessus du canvas Three.js */
+  pointer-events: none;       /* Ne capture pas les événements souris */
+  will-change: transform;     /* Optimisation GPU */
+  transition:
+    transform 0.08s linear,
+    opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1);  /* Fade sur changement d'onglet */
+}
+
+/* Classe appliquée par JS quand on quitte l'onglet Accueil */
+#subjects-layer.subjects-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+#subjects-img {
+  display: block;
+  height: 90vh;               /* Hauteur relative à la fenêtre */
+  max-height: 900px;
+  width: auto;
+  object-fit: contain;
+  /* Masque doux en bas pour intégrer les personnes dans le fond */
+  -webkit-mask-image: linear-gradient(to top, transparent 0%, black 15%);
+  mask-image: linear-gradient(to top, transparent 0%, black 15%);
+  filter: drop-shadow(0 0 60px rgba(201,169,110,0.15));
+}
+
+/* ----------------------------------------------------------------
+   UI OVERLAY — Conteneur principal de l'interface
+---------------------------------------------------------------- */
+#ui-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10;                /* Au-dessus de tout */
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;       /* Désactivé par défaut, réactivé sur les enfants interactifs */
+}
+
+/* Réactiver les interactions sur l'en-tête et les contenus */
+#site-header,
+.tab-content,
+.cta-button,
+.nav-tab,
+form,
+input,
+textarea,
+button,
+label {
+  pointer-events: auto;
+}
+
+/* ----------------------------------------------------------------
+   EN-TÊTE & LOGO
+---------------------------------------------------------------- */
+#site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 4rem;
+  height: var(--header-height);
+  /* Verre dépoli subtil */
+  background: linear-gradient(
+    to bottom,
+    rgba(4,4,10,0.85) 0%,
+    rgba(4,4,10,0.4) 70%,
+    transparent 100%
+  );
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border-bottom: 1px solid rgba(201,169,110,0.08);
+}
+
+#logo {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+  letter-spacing: 0.12em;
+}
+
+.logo-main {
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--color-gold-light);
+}
+
+.logo-sub {
+  font-family: var(--font-sans);
+  font-size: 0.55rem;
+  font-weight: 300;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--color-gold-dim);
+}
+
+/* ----------------------------------------------------------------
+   NAVIGATION — Onglets
+---------------------------------------------------------------- */
+#main-nav {
+  display: flex;
+  gap: var(--nav-gap);
+  align-items: center;
+}
+
+.nav-tab {
+  position: relative;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 300;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  padding: 0.5rem 0;
+  transition: color var(--transition-ui);
+}
+
+/* Barre dorée sous l'onglet actif */
+.nav-tab::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--color-gold), transparent);
+  transform: scaleX(0);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-tab:hover,
+.nav-tab.active {
+  color: var(--color-gold-light);
+}
+
+.nav-tab.active::after,
+.nav-tab:hover::after {
+  transform: scaleX(1);
+}
+
+/* ----------------------------------------------------------------
+   CONTENU DES ONGLETS — Système de visibilité & transitions
+   Chaque section est positionnée de la même façon :
+   - invisible par défaut (opacity:0, pointer-events:none)
+   - visible quand elle a la classe .active
+---------------------------------------------------------------- */
+.tab-content {
+  position: absolute;
+  inset: 0;
+  top: var(--header-height);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 3rem 5rem;
+  overflow-y: auto;           /* Scroll à l'intérieur de chaque onglet */
+
+  /* État initial : invisible */
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity var(--transition-tab),
+    transform var(--transition-tab);
+  pointer-events: none;
+}
+
+.tab-content.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+/* ----------------------------------------------------------------
+   ONGLET ACCUEIL — Texte héro
+---------------------------------------------------------------- */
+#tab-panel-home {
+  /* Positionné à gauche pour laisser les personnes visibles */
+  justify-content: flex-start;
+  align-items: flex-end;
+  padding-bottom: 6rem;
+}
+
+.hero-text {
+  max-width: 520px;
+  /* Légère zone de lisibilité derrière le texte */
+  background: radial-gradient(ellipse at left center, rgba(4,4,10,0.5) 0%, transparent 70%);
+  padding: 2rem;
+  border-radius: 4px;
+}
+
+.hero-tagline {
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  font-weight: 300;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--color-gold);
+  margin-bottom: 1.2rem;
+  /* Animation d'entrée */
+  animation: fadeInUp 1s ease 0.3s both;
+}
+
+.hero-title {
+  font-family: var(--font-serif);
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 300;
+  line-height: 1.15;
+  color: var(--color-white);
+  margin-bottom: 1.5rem;
+  animation: fadeInUp 1s ease 0.5s both;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: var(--color-gold-light);
+}
+
+.hero-description {
+  font-size: 0.82rem;
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--color-muted);
+  margin-bottom: 2.5rem;
+  animation: fadeInUp 1s ease 0.7s both;
+}
+
+/* ----------------------------------------------------------------
+   BOUTON CTA
+---------------------------------------------------------------- */
+.cta-button {
+  display: inline-block;
+  font-family: var(--font-sans);
+  font-size: 0.65rem;
+  font-weight: 400;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--color-gold-light);
+  background: transparent;
+  border: 1px solid rgba(201,169,110,0.4);
+  padding: 1rem 2.5rem;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: color var(--transition-ui), border-color var(--transition-ui);
+  animation: fadeInUp 1s ease 0.9s both;
+}
+
+/* Effet de remplissage au hover */
+.cta-button::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(201,169,110,0.15), rgba(201,169,110,0.05));
+  transform: translateX(-101%);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cta-button:hover::before {
+  transform: translateX(0);
+}
+
+.cta-button:hover {
+  border-color: rgba(201,169,110,0.8);
+  color: var(--color-gold-light);
+}
+
+/* ----------------------------------------------------------------
+   PANNEAU DE CONTENU GÉNÉRIQUE (Portfolio, Contact)
+---------------------------------------------------------------- */
+.content-panel {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  /* Fond verre dépoli — assez opaque pour couvrir les éléments sous-jacents */
+  background: rgba(4, 4, 15, 0.88);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+  border: 1px solid rgba(201,169,110,0.12);
+  border-radius: 2px;
+  padding: 3rem 3.5rem;
+  box-shadow: 0 0 80px rgba(0,0,0,0.6);
+}
+
+.panel-title {
+  font-family: var(--font-serif);
+  font-size: clamp(1.8rem, 3vw, 2.8rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--color-gold-light);
+  margin-bottom: 0.5rem;
+}
+
+.panel-subtitle {
+  font-size: 0.65rem;
+  font-weight: 300;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--color-gold-dim);
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid rgba(201,169,110,0.1);
+}
+
+/* ----------------------------------------------------------------
+   PORTFOLIO — Grilles de galeries
+---------------------------------------------------------------- */
+.gallery-categories {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.gallery-category {
+  /* Chaque catégorie est une section distincte */
+}
+
+.category-title {
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  font-weight: 400;
+  font-style: italic;
+  color: var(--color-gold);
+  margin-bottom: 1.2rem;
+  padding-left: 1rem;
+  border-left: 1px solid var(--color-gold-dim);
+}
+
+/* ----------------------------------------------------------------
+   GRILLE DE PHOTOS
+   Structure à utiliser pour vos vraies photos :
+   <div class="gallery-item">
+     <img src="..." alt="..." />
+     <div class="gallery-item-overlay"><span>Titre</span></div>
+   </div>
+---------------------------------------------------------------- */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 0.8rem;
+}
+
+/* Item de galerie réel */
+.gallery-item {
+  position: relative;
+  aspect-ratio: 3/4;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1), filter 0.6s ease;
+  filter: brightness(0.85) saturate(0.9);
+}
+
+.gallery-item:hover img {
+  transform: scale(1.06);
+  filter: brightness(1) saturate(1);
+}
+
+.gallery-item-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(4,4,10,0.8) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  display: flex;
+  align-items: flex-end;
+  padding: 1rem;
+}
+
+.gallery-item-overlay span {
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--color-gold-light);
+}
+
+.gallery-item:hover .gallery-item-overlay {
+  opacity: 1;
+}
+
+/* Placeholder (avant d'ajouter de vraies photos) */
+.gallery-placeholder {
+  grid-column: 1 / -1;        /* S'étend sur toute la largeur */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 3rem;
+  border: 1px dashed rgba(201,169,110,0.15);
+  border-radius: 2px;
+  color: var(--color-gold-dim);
+  min-height: 150px;
+}
+
+.placeholder-icon {
+  font-size: 1.5rem;
+  opacity: 0.4;
+  /* Animation de pulsation douce */
+  animation: pulse 3s ease-in-out infinite;
+}
+
+.gallery-placeholder p {
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  opacity: 0.5;
+}
+
+/* ----------------------------------------------------------------
+   FORMULAIRE DE CONTACT
+---------------------------------------------------------------- */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 0.62rem;
+  font-weight: 400;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--color-gold-dim);
+}
+
+.form-group input,
+.form-group textarea {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(201,169,110,0.15);
+  border-radius: 2px;
+  color: var(--color-white);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 300;
+  padding: 0.85rem 1.1rem;
+  transition: border-color var(--transition-ui), background var(--transition-ui);
+  outline: none;
+  resize: vertical;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: rgba(240,237,232,0.2);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: rgba(201,169,110,0.5);
+  background: rgba(255,255,255,0.06);
+}
+
+.form-feedback {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: var(--color-gold);
+  min-height: 1.2em;
+  transition: opacity 0.3s ease;
+}
+
+/* Infos de contact sous le formulaire */
+.contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(201,169,110,0.08);
+}
+
+.contact-info-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.8rem;
+  font-weight: 300;
+  color: var(--color-muted);
+}
+
+.info-icon {
+  color: var(--color-gold);
+  font-size: 0.6rem;
+  flex-shrink: 0;
+}
+
+/* ----------------------------------------------------------------
+   ANIMATIONS KEYFRAMES
+---------------------------------------------------------------- */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50%       { opacity: 0.8; transform: scale(1.1); }
+}
+
+/* ----------------------------------------------------------------
+   SCROLLBAR PERSONNALISÉE
+---------------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(201,169,110,0.3);
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(201,169,110,0.6);
+}
+
+/* ----------------------------------------------------------------
+   RESPONSIVE — Tablette & Mobile
+---------------------------------------------------------------- */
+@media (max-width: 768px) {
+
+  #site-header {
+    padding: 0 1.5rem;
+  }
+
+  #main-nav {
+    gap: 1.2rem;
+  }
+
+  .nav-tab {
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+  }
+
+  #tab-panel-home {
+    padding: 2rem 1.5rem;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .hero-text {
+    max-width: 100%;
+    background: rgba(4,4,10,0.6);
+  }
+
+  #subjects-img {
+    height: 70vh;
+  }
+
+  .tab-content {
+    padding: 2rem 1rem;
+  }
+
+  .content-panel {
+    padding: 2rem 1.5rem;
+  }
+
+  .gallery-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  }
+}

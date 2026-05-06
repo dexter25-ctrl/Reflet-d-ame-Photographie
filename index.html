@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reflet d'Âme — Photographie</title>
+  <meta name="description" content="Galerie photographique d'art — Portraits, émotions et lumière. Bienvenue dans l'univers de Reflet d'Âme Photographie." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ============================================================
+       CANVAS THREE.JS — Fond spatial + système de particules diamant
+       Ce canvas reste toujours visible quelle que soit l'onglet actif
+  ============================================================ -->
+  <canvas id="three-canvas"></canvas>
+
+  <!-- ============================================================
+       CALQUE PERSONNES — Image PNG détourée (parallaxe lente)
+       data-depth contrôle l'intensité du mouvement parallaxe
+  ============================================================ -->
+  <div id="subjects-layer" data-depth="0.04">
+    <img id="subjects-img" src="assets/les3.png" alt="Les trois personnes photographiées" />
+  </div>
+
+  <!-- ============================================================
+       INTERFACE UTILISATEUR — Navigation + Contenu onglets
+  ============================================================ -->
+  <div id="ui-overlay">
+
+    <!-- En-tête / Logo -->
+    <header id="site-header">
+      <div id="logo">
+        <span class="logo-main">Reflet d'Âme</span>
+        <span class="logo-sub">Photographie</span>
+      </div>
+
+      <!-- Navigation onglets -->
+      <nav id="main-nav" role="navigation" aria-label="Navigation principale">
+        <button class="nav-tab active" data-tab="home" id="tab-home" aria-selected="true">Accueil</button>
+        <button class="nav-tab" data-tab="portfolio" id="tab-portfolio" aria-selected="false">Portfolio</button>
+        <button class="nav-tab" data-tab="contact" id="tab-contact" aria-selected="false">Contact</button>
+      </nav>
+    </header>
+
+    <!-- ============================================================
+         ONGLET : ACCUEIL
+    ============================================================ -->
+    <section class="tab-content active" id="tab-panel-home" role="tabpanel" aria-labelledby="tab-home">
+      <div class="hero-text">
+        <p class="hero-tagline">L'instant. L'émotion. La lumière.</p>
+        <h1 class="hero-title">Capturer l'âme<br/><em>de chaque instant</em></h1>
+        <p class="hero-description">
+          Chaque photographie est un reflet fidèle d'un moment unique —<br/>
+          une invitation à ressentir ce que les mots ne peuvent exprimer.
+        </p>
+        <button class="cta-button" id="cta-portfolio">Découvrir le Portfolio</button>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         ONGLET : PORTFOLIO
+         Ajouter vos galeries ici — chaque .gallery-category est une section
+    ============================================================ -->
+    <section class="tab-content" id="tab-panel-portfolio" role="tabpanel" aria-labelledby="tab-portfolio">
+      <div class="content-panel">
+        <h2 class="panel-title">Portfolio</h2>
+        <p class="panel-subtitle">Explorez les collections photographiques</p>
+
+        <!-- ========================================================
+             GALERIES DE PHOTOS — À remplir avec vos images
+             Chaque .gallery-category représente un thème
+             Exemple de structure pour ajouter une photo :
+             <div class="gallery-item">
+               <img src="assets/votre-photo.jpg" alt="Description" />
+               <div class="gallery-item-overlay"><span>Titre</span></div>
+             </div>
+        ======================================================== -->
+        <div class="gallery-categories">
+
+          <!-- CATÉGORIE 1 : Portraits -->
+          <div class="gallery-category" id="gallery-portraits">
+            <h3 class="category-title">Portraits</h3>
+            <div class="gallery-grid" id="grid-portraits">
+              <!-- Placeholder — Remplacer par vos images réelles -->
+              <div class="gallery-placeholder">
+                <span class="placeholder-icon">◆</span>
+                <p>Vos portraits ici</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- CATÉGORIE 2 : Famille -->
+          <div class="gallery-category" id="gallery-famille">
+            <h3 class="category-title">Famille</h3>
+            <div class="gallery-grid" id="grid-famille">
+              <div class="gallery-placeholder">
+                <span class="placeholder-icon">◆</span>
+                <p>Vos photos famille ici</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- CATÉGORIE 3 : Événements -->
+          <div class="gallery-category" id="gallery-events">
+            <h3 class="category-title">Événements</h3>
+            <div class="gallery-grid" id="grid-events">
+              <div class="gallery-placeholder">
+                <span class="placeholder-icon">◆</span>
+                <p>Vos événements ici</p>
+              </div>
+            </div>
+          </div>
+
+        </div><!-- fin .gallery-categories -->
+      </div>
+    </section>
+
+    <!-- ============================================================
+         ONGLET : CONTACT
+    ============================================================ -->
+    <section class="tab-content" id="tab-panel-contact" role="tabpanel" aria-labelledby="tab-contact">
+      <div class="content-panel">
+        <h2 class="panel-title">Contact</h2>
+        <p class="panel-subtitle">Parlons de votre projet photographique</p>
+
+        <form id="contact-form" class="contact-form" novalidate>
+          <div class="form-group">
+            <label for="contact-name">Votre nom</label>
+            <input type="text" id="contact-name" name="name" placeholder="Prénom Nom" required autocomplete="name" />
+          </div>
+          <div class="form-group">
+            <label for="contact-email">Adresse e-mail</label>
+            <input type="email" id="contact-email" name="email" placeholder="vous@exemple.fr" required autocomplete="email" />
+          </div>
+          <div class="form-group">
+            <label for="contact-subject">Sujet</label>
+            <input type="text" id="contact-subject" name="subject" placeholder="Portrait, mariage, famille..." />
+          </div>
+          <div class="form-group">
+            <label for="contact-message">Message</label>
+            <textarea id="contact-message" name="message" rows="5" placeholder="Décrivez votre projet..." required></textarea>
+          </div>
+          <button type="submit" class="cta-button" id="contact-submit">Envoyer le message</button>
+          <p id="form-feedback" class="form-feedback" aria-live="polite"></p>
+        </form>
+
+        <div class="contact-info">
+          <div class="contact-info-item">
+            <span class="info-icon">✦</span>
+            <span>Disponible pour des séances en studio & en extérieur</span>
+          </div>
+          <div class="contact-info-item">
+            <span class="info-icon">✦</span>
+            <span>Réponse sous 48 heures</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div><!-- fin #ui-overlay -->
+
+  <!-- ============================================================
+       SCRIPTS — Three.js CDN + script principal
+  ============================================================ -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="main.js"></script>
+
+</body>
+</html>
