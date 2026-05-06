@@ -630,14 +630,14 @@ label {
 
   #tab-panel-home {
     padding: 1.5rem;
-    align-items: flex-end; /* Garde le texte en bas */
+    align-items: flex-start; /* Remonte le texte vers le haut */
     justify-content: center;
-    padding-bottom: 4rem;
+    padding-top: 2rem; /* Placement juste sous le menu */
   }
 
   .hero-text {
     max-width: 100%;
-    background: linear-gradient(to top, rgba(4,4,10,0.8) 0%, transparent 100%);
+    background: linear-gradient(to bottom, rgba(4,4,10,0.8) 0%, transparent 100%);
     padding: 1.5rem;
     text-align: center;
   }
