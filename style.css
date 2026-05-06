@@ -611,44 +611,86 @@ label {
    RESPONSIVE — Tablette & Mobile
 ---------------------------------------------------------------- */
 @media (max-width: 768px) {
-
   #site-header {
     padding: 0 1.5rem;
   }
 
   #main-nav {
-    gap: 1.2rem;
+    gap: 1rem;
   }
 
   .nav-tab {
-    font-size: 0.6rem;
-    letter-spacing: 0.2em;
+    font-size: 0.55rem;
+    letter-spacing: 0.15em;
+  }
+
+  .logo-main {
+    font-size: 1.2rem;
   }
 
   #tab-panel-home {
-    padding: 2rem 1.5rem;
-    align-items: flex-start;
+    padding: 1.5rem;
+    align-items: flex-end; /* Garde le texte en bas */
     justify-content: center;
+    padding-bottom: 4rem;
   }
 
   .hero-text {
     max-width: 100%;
-    background: rgba(4,4,10,0.6);
+    background: linear-gradient(to top, rgba(4,4,10,0.8) 0%, transparent 100%);
+    padding: 1.5rem;
+    text-align: center;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  .hero-description {
+    font-size: 0.75rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
   }
 
   #subjects-img {
-    height: 70vh;
+    height: 60vh; /* Réduit pour laisser voir le fond */
+    max-height: 500px;
   }
 
   .tab-content {
-    padding: 2rem 1rem;
+    padding: 1.5rem 1rem;
   }
 
   .content-panel {
-    padding: 2rem 1.5rem;
+    padding: 2rem 1.2rem;
+    margin-top: 1rem;
   }
 
   .gallery-grid {
     grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
   }
 }
+
+/* Optimisations spécifiques pour très petits écrans (iPhone SE, etc.) */
+@media (max-width: 480px) {
+  #subjects-img {
+    height: 50vh;
+    opacity: 0.8; /* Légère transparence pour accentuer l'immersion spatiale */
+  }
+
+  .hero-title {
+    font-size: 1.6rem;
+  }
+
+  .hero-tagline {
+    font-size: 0.55rem;
+    letter-spacing: 0.3em;
+  }
+
+  .cta-button {
+    padding: 0.8rem 1.5rem;
+    font-size: 0.55rem;
+  }
+}
+
